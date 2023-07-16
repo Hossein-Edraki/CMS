@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Models;
 
 namespace WebApi.Controllers
 {
@@ -15,17 +16,17 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUser([FromBody] UserRegistrationDto userRegistration)
+        public async Task<IActionResult> RegisterUser([FromBody] UserRegistrationViewModel userRegistration)
         {
 
-            var userResult = await _userService.RegisterUserAsync(userRegistration);
-            return !userResult.Succeeded ? new BadRequestObjectResult(userResult) : StatusCode(201);
+            var userResult = await _userService.RegisterUserAsync(new Application.Models.UserDto { });
+            return userResult <=  0 ? new BadRequestObjectResult(userResult) : StatusCode(201);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Authenticate([FromBody] UserLoginDto user)
+        public async Task<IActionResult> Authenticate([FromBody] UserLoginViewModel user)
         {
-            return !await _userService.ValidateUserAsync(user)
+            return !await _userService.ValidateUserAsync(user.Username, user.Password)
                 ? Unauthorized()
                 : Ok(new { Token = await _userService.CreateTokenAsync() });
         }

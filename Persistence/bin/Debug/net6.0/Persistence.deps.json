@@ -673,6 +673,7 @@
       },
       "Application/1.0.0": {
         "dependencies": {
+          "Domain": "1.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19"
         },
         "runtime": {

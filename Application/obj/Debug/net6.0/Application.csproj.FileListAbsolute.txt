@@ -10,3 +10,6 @@ C:\Users\hedraki\Desktop\Project\CMS\Application\obj\Debug\net6.0\Application.dl
 C:\Users\hedraki\Desktop\Project\CMS\Application\obj\Debug\net6.0\refint\Application.dll
 C:\Users\hedraki\Desktop\Project\CMS\Application\obj\Debug\net6.0\Application.pdb
 C:\Users\hedraki\Desktop\Project\CMS\Application\obj\Debug\net6.0\ref\Application.dll
+C:\Users\hedraki\Desktop\Project\CMS\Application\bin\Debug\net6.0\Domain.dll
+C:\Users\hedraki\Desktop\Project\CMS\Application\bin\Debug\net6.0\Domain.pdb
+C:\Users\hedraki\Desktop\Project\CMS\Application\obj\Debug\net6.0\Application.csproj.CopyComplete

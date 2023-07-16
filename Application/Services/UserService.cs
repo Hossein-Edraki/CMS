@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models;
 
 namespace Application.Services
 {
@@ -9,6 +10,21 @@ namespace Application.Services
         public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
+        }
+
+        public Task<string> CreateTokenAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> RegisterUserAsync(UserDto user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ValidateUserAsync(string username, string password)
+        {
+            throw new NotImplementedException();
         }
     }
 }
