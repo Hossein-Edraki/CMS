@@ -1,15 +1,14 @@
-using Microsoft.AspNetCore.Identity;
+using Application;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-//builder.Services.AddAuthentication();
 
 builder.Services.AddIdentity<User, IdentityRole>(o =>
 {
@@ -22,27 +21,38 @@ builder.Services.AddIdentity<User, IdentityRole>(o =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+var _appConfig = builder.Configuration.GetValue<AppConfig>("AppConfig");
 
-var jwtConfig = builder.Configuration.GetSection("jwtConfig");
-var secretKey = jwtConfig["secret"];
-builder.Services.AddAuthentication(opt =>
-{
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtConfig["validIssuer"],
-        ValidAudience = jwtConfig["validAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-    };
-});
+        var secretkey = Encoding.UTF8.GetBytes(_appConfig.JwtOptions.SecretKey);
+        var encryptionkey = Encoding.UTF8.GetBytes(_appConfig.JwtOptions.Encryptkey);
+
+        var validationParameters = new TokenValidationParameters
+        {
+            ClockSkew = TimeSpan.Zero, // default: 5 min
+            RequireSignedTokens = true,
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(secretkey),
+
+            RequireExpirationTime = true,
+            ValidateLifetime = true,
+
+            ValidateAudience = true, //default : false
+            ValidAudience = _appConfig.JwtOptions.Audience,
+
+            ValidateIssuer = true, //default : false
+            ValidIssuer = _appConfig.JwtOptions.Issuer,
+
+            TokenDecryptionKey = new SymmetricSecurityKey(encryptionkey)
+        };
+
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = validationParameters;
+    });
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
